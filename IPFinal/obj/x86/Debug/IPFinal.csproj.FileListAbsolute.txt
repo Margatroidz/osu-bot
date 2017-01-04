@@ -1,0 +1,17 @@
+D:\Download\IPFinal\IPFinal\bin\x86\Debug\IPFinal.exe.config
+D:\Download\IPFinal\IPFinal\bin\x86\Debug\IPFinal.exe
+D:\Download\IPFinal\IPFinal\bin\x86\Debug\IPFinal.pdb
+D:\Download\IPFinal\IPFinal\bin\x86\Debug\Emgu.CV.dll
+D:\Download\IPFinal\IPFinal\bin\x86\Debug\Emgu.Util.dll
+D:\Download\IPFinal\IPFinal\bin\x86\Debug\Emgu.CV.xml
+D:\Download\IPFinal\IPFinal\bin\x86\Debug\Emgu.Util.xml
+D:\Download\IPFinal\IPFinal\obj\x86\Debug\MainWindow.g.cs
+D:\Download\IPFinal\IPFinal\obj\x86\Debug\App.g.cs
+D:\Download\IPFinal\IPFinal\obj\x86\Debug\IPFinal_MarkupCompile.cache
+D:\Download\IPFinal\IPFinal\obj\x86\Debug\IPFinal_MarkupCompile.lref
+D:\Download\IPFinal\IPFinal\obj\x86\Debug\MainWindow.baml
+D:\Download\IPFinal\IPFinal\obj\x86\Debug\IPFinal.g.resources
+D:\Download\IPFinal\IPFinal\obj\x86\Debug\IPFinal.Properties.Resources.resources
+D:\Download\IPFinal\IPFinal\obj\x86\Debug\IPFinal.csproj.GenerateResource.Cache
+D:\Download\IPFinal\IPFinal\obj\x86\Debug\IPFinal.exe
+D:\Download\IPFinal\IPFinal\obj\x86\Debug\IPFinal.pdb

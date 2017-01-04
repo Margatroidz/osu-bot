@@ -1,0 +1,13 @@
+D:\Download\IPFinal\IPFinal\bin\Release\IPFinal.exe.config
+D:\Download\IPFinal\IPFinal\bin\Release\IPFinal.exe
+D:\Download\IPFinal\IPFinal\bin\Release\IPFinal.pdb
+D:\Download\IPFinal\IPFinal\obj\Release\MainWindow.g.cs
+D:\Download\IPFinal\IPFinal\obj\Release\App.g.cs
+D:\Download\IPFinal\IPFinal\obj\Release\IPFinal_MarkupCompile.cache
+D:\Download\IPFinal\IPFinal\obj\Release\IPFinal_MarkupCompile.lref
+D:\Download\IPFinal\IPFinal\obj\Release\MainWindow.baml
+D:\Download\IPFinal\IPFinal\obj\Release\IPFinal.g.resources
+D:\Download\IPFinal\IPFinal\obj\Release\IPFinal.Properties.Resources.resources
+D:\Download\IPFinal\IPFinal\obj\Release\IPFinal.csproj.GenerateResource.Cache
+D:\Download\IPFinal\IPFinal\obj\Release\IPFinal.exe
+D:\Download\IPFinal\IPFinal\obj\Release\IPFinal.pdb
