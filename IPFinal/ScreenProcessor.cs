@@ -1,14 +1,13 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Threading.Tasks;
 
 namespace IPFinal
 {
@@ -23,6 +22,7 @@ namespace IPFinal
         List<int>[] edgeDistance;
         int resultImage = -1;
         int number = 0;
+
         public ScreenProcessor()
         {
             key = new char[] { 'D', 'F', 'J', 'K' };
@@ -31,47 +31,17 @@ namespace IPFinal
         }
 
         public void Process(Bitmap screen)
-        {
+        {            
             Image<Bgr, byte> inputImage = new Image<Bgr, byte>(screen);
             if (auxiliaryLine == null) DrawAuxiliaryLine(screen.Width, screen.Height);
-
-            Image<Gray, byte> image = inputImage.Convert<Gray, byte>().Erode(2).Dilate(2).ThresholdBinary(new Gray(128), new Gray(255));
-            LineSegment2D[][] segments = image.HoughLines(16, 255, 0.005, Math.PI / 2, 25, 50, 0);
-            Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.ToBitmap());
-            foreach (LineSegment2D[] lines in segments)
-            {
-                foreach (LineSegment2D line in lines)
-                {
-                    if (Math.Abs(line.P1.Y - line.P2.Y) < 3)
-                    {
-                        result.Draw(line, new Bgr(0, 0, 255), 3);
-                        for (int i = 0; i < 4; i++)
-                        {
-                            if (CheckCross(line, i)) edgeDistance[i].Add(screen.Height - line.P1.Y);
-                        }
-                    }
-                }
-            }
+            Image<Gray, byte> image = inputImage.Convert<Gray, byte>().Erode(2).Dilate(2).ThresholdBinary(new Gray(128), new Gray(255)).Dilate(2).Erode(2);
             AnalysisOutput(image);
 
-            inputImage.Save("C:/result/" + number++ + ".png");
-            image.Save("C:/result/" + number++ + ".png");
-            result.Save("C:/result/" + number++ + ".png");
-            switch (resultImage)
-            {
-                case (0):
-                    this.result = inputImage.ToBitmap();
-                    //inputImage.Save("C:/result/" + number++ + ".png");
-                    break;
-                case (1):
-                    this.result = image.ToBitmap();
-                    //image.Save("C:/result/" + number++ + ".png");
-                    break;
-                case (2):
-                    //result.Save("C:/result/" + number++ + ".png");
-                    this.result = result.ToBitmap();
-                    break;
-            }
+            //result = image.ToBitmap();
+            //result.Save("D:/result/" + number++ + ".png");
+            //inputImage.Save("C:/result/" + number++ + ".png");
+            //image.Save("C:/result/" + number++ + ".png");
+            //result.Save("C:/result/" + number++ + ".png");
         }
 
         private void DrawAuxiliaryLine(int width, int height)
@@ -90,29 +60,39 @@ namespace IPFinal
         {
             for (int i = 0; i < 4; i++)
             {
-                edgeDistance[i].Sort();
-                //判定點靠近下方
-                if (edgeDistance[i].Count > 0 && edgeDistance[i][0] < 60)
+                //從底部往上 10 ~ 115 尋找白色部分
+                int objectHeight = 10;
+                for (; objectHeight < 115; objectHeight++) if (image[image.Height - objectHeight, auxiliaryPointX[i]].Intensity > 64) break;
+                if (objectHeight >= 115)
                 {
-                    if (edgeDistance[i].Count > 1)
-                    {
-                        //判斷第二條線是否靠近
-                        if (edgeDistance[i][1] - edgeDistance[i][0] < 25)
-                        {
-                            outputSender.SendKey(key[i]);
-                        }
-                    }
-                    if (image[image.Height - edgeDistance[i][0] - 10, auxiliaryPointX[i]].Intensity < 64)
-                    {
-                        outputSender.SendKeyUp(i);
-                    }
-                    else
-                    {
-                        outputSender.SendKeyDown(i);
-                    }
+                    if (outputSender.GetKeyDown(i)) outputSender.SendKeyUp(i);
+                    continue;
                 }
 
-                edgeDistance[i].Clear();
+                //如果不是從10 ~ 115開始出現白色，先按下按鍵
+                if (objectHeight > 10)
+                {
+
+                    int secondObjectHeight = 0;
+                    int secondLimit = 90 - objectHeight;
+                    for (; secondObjectHeight <= secondLimit; secondObjectHeight++) if (image[image.Height - objectHeight - secondObjectHeight, auxiliaryPointX[i]].Intensity < 64) break;
+
+                    //click按鍵的需要的高度比較低
+                    if (secondObjectHeight <= 25 && objectHeight <= 75)
+                    {
+                        outputSender.SendKey(i);
+                        //if (isKeyDown) 
+                        //else outputSender.SendKeyUp(i);
+                    }
+                    //長壓得提早按，原因我也不知道
+                    else if (secondObjectHeight > 25) outputSender.SendKeyDown(i);
+                }
+                else
+                {
+                    int whiteHeight = 0;
+                    for (; whiteHeight < 65; whiteHeight++) if (image[image.Height - objectHeight - whiteHeight, auxiliaryPointX[i]].Intensity < 64) break;
+                    if (whiteHeight < 65) outputSender.SendKeyUp(i);
+                }
             }
             outputSender.Send();
         }
@@ -154,7 +134,8 @@ namespace IPFinal
                         bitmapImage.EndInit();
                         return bitmapImage;
                     }
-                }return null;
+                }
+                return null;
             }
         }
     }

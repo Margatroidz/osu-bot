@@ -20,7 +20,7 @@ namespace IPFinal
             sc = new ScreenCapture(sp);
             InitializeComponent();
             timer.Tick += new EventHandler(timer_Tick);
-            timer.Interval = TimeSpan.FromTicks(20);
+            timer.Interval = TimeSpan.FromTicks(15);
         }
 
         private void Start_Click(object sender, RoutedEventArgs e)
@@ -38,6 +38,7 @@ namespace IPFinal
         {
             sc.SnapShoot();
             previewImage.Source = sp.Result;
+
         }
 
         private void PreviewRadioButton_Checked(object sender, RoutedEventArgs e)

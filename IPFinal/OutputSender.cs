@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows;
 
 namespace IPFinal
 {
@@ -14,7 +14,6 @@ namespace IPFinal
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
         [DllImport("user32.DLL")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
-
         [DllImport("user32.dll")]
         public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, IntPtr dwExtraInfo);
 
@@ -23,29 +22,32 @@ namespace IPFinal
 
         IntPtr game;
         byte[] keyCode;
-        Queue<int> keyDownQueue;
-        Queue<int> keyUpQueue;
-        Queue<char> keyQueue;
+        bool[] isKeyDown;
+        List<int> keyBuffer;
+        Queue<int[]> recoverKeyBuffer;
 
         public OutputSender()
         {
             //Process _game = Process.GetProcessesByName("osu!").Single();
             //game = _game.Handle;
             game = FindWindow(null, "osu!");
-
             keyCode = new byte[] { Convert.ToByte('D'), Convert.ToByte('F'), Convert.ToByte('J'), Convert.ToByte('K') };
-            keyDownQueue = new Queue<int>();
-            keyUpQueue = new Queue<int>();
-            keyQueue = new Queue<char>();
+            isKeyDown = new bool[] { false, false, false, false };
+            keyBuffer = new List<int>();
+            recoverKeyBuffer = new Queue<int[]>();
 
-            //Task.Factory.StartNew(() =>
-            //{
-            //    while (true)
-            //    {
-            //        if (keyDownQueue.Count > 0) keybd_event(keyCode[keyDownQueue.Dequeue()], 0, KEYEVENTF_EXTENDEDKEY, (IntPtr)0);
-            //        if (keyUpQueue.Count > 0) keybd_event(keyCode[keyUpQueue.Dequeue()], 0, KEYEVENTF_KEYUP, (IntPtr)0);
-            //    }
-            //});
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    if (recoverKeyBuffer.Count > 0)
+                    {
+                        int[] keys = recoverKeyBuffer.Dequeue();
+                        await Task.Delay(20);
+                        foreach (int key in keys) keybd_event(keyCode[key], 0, KEYEVENTF_KEYUP, (IntPtr)0);
+                    }
+                }
+            });
         }
 
         public void SetForeground()
@@ -56,35 +58,49 @@ namespace IPFinal
         public void SendKeyUp(int keyNumber)
         {
             //keyUpQueue.Enqueue(keyNumber);
-            keybd_event(keyCode[keyNumber], 0, KEYEVENTF_KEYUP, (IntPtr)0);
+            if (isKeyDown[keyNumber])
+            {
+                keybd_event(keyCode[keyNumber], 0, KEYEVENTF_KEYUP, (IntPtr)0);
+                isKeyDown[keyNumber] = false;
+            }
         }
 
         public void SendKeyDown(int keyNumber)
         {
             //keyDownQueue.Enqueue(keyNumber);
-            keybd_event(keyCode[keyNumber], 0, KEYEVENTF_EXTENDEDKEY, (IntPtr)0);
+            if (!isKeyDown[keyNumber])
+            {
+                keybd_event(keyCode[keyNumber], 0, KEYEVENTF_EXTENDEDKEY, (IntPtr)0);
+                isKeyDown[keyNumber] = true;
+            }
         }
 
-        public void SendKey(char key)
+        public void SendKey(int keyNumber)
         {
-            keyQueue.Enqueue(key);
-            //SendKeys.SendWait(key);
-            //SendKeys.Flush();
+            keyBuffer.Add(keyNumber);
+            //Task.Factory.StartNew(async () =>
+            //{
+            //    await Task.Delay(20);
+            //    keybd_event(keyCode[keyNumber], 0, KEYEVENTF_KEYUP, (IntPtr)0);
+            //});
         }
 
         public void Send()
         {
-            if (keyQueue.Count > 0)
+            if (keyBuffer.Count > 0)
             {
-                string msg = string.Empty;
-                while (keyQueue.Count > 0)
+                foreach (int key in keyBuffer)
                 {
-                    if (!msg.Contains<char>(keyQueue.Peek())) msg += keyQueue.Dequeue();
-                    else keyQueue.Dequeue();
+                    keybd_event(keyCode[key], 0, KEYEVENTF_EXTENDEDKEY, (IntPtr)0);
                 }
-                SendKeys.SendWait(msg);
-                SendKeys.Flush();
-            };
+                recoverKeyBuffer.Enqueue(keyBuffer.ToArray());
+                keyBuffer.Clear();
+            }
+        }
+
+        public bool GetKeyDown(int keyNumber)
+        {
+            return isKeyDown[keyNumber];
         }
     }
 }
