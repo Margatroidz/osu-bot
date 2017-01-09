@@ -23,7 +23,6 @@ D:\Download\OsuBot\IPFinal\bin\x64\Debug\Emgu.CV.dll
 D:\Download\OsuBot\IPFinal\bin\x64\Debug\Emgu.Util.dll
 D:\Download\OsuBot\IPFinal\bin\x64\Debug\Emgu.CV.xml
 D:\Download\OsuBot\IPFinal\bin\x64\Debug\Emgu.Util.xml
-D:\Download\OsuBot\IPFinal\obj\x64\Debug\IPFinal.csprojResolveAssemblyReference.cache
 D:\Download\OsuBot\IPFinal\obj\x64\Debug\MainWindow.g.cs
 D:\Download\OsuBot\IPFinal\obj\x64\Debug\App.g.cs
 D:\Download\OsuBot\IPFinal\obj\x64\Debug\IPFinal_MarkupCompile.cache
@@ -34,3 +33,6 @@ D:\Download\OsuBot\IPFinal\obj\x64\Debug\IPFinal.Properties.Resources.resources
 D:\Download\OsuBot\IPFinal\obj\x64\Debug\IPFinal.csproj.GenerateResource.Cache
 D:\Download\OsuBot\IPFinal\obj\x64\Debug\IPFinal.exe
 D:\Download\OsuBot\IPFinal\obj\x64\Debug\IPFinal.pdb
+D:\Download\OsuBot\IPFinal\bin\x64\Debug\Emgu.CV.GPU.dll
+D:\Download\OsuBot\IPFinal\bin\x64\Debug\Emgu.CV.GPU.xml
+D:\Download\OsuBot\IPFinal\obj\x64\Debug\IPFinal.csprojResolveAssemblyReference.cache

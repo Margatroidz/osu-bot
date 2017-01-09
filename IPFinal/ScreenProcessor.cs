@@ -16,28 +16,29 @@ namespace IPFinal
         OutputSender outputSender;
         Image result;
         //輔助線，用來判斷相交
-        LineSegment2D[] auxiliaryLine;
         int[] auxiliaryPointX;
         char[] key;
         List<int>[] edgeDistance;
         int resultImage = -1;
-        int number = 0;
+        //File f;
 
         public ScreenProcessor()
         {
             key = new char[] { 'D', 'F', 'J', 'K' };
             edgeDistance = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
             outputSender = new OutputSender();
+
         }
 
         public void Process(Bitmap screen)
-        {            
+        {
             Image<Bgr, byte> inputImage = new Image<Bgr, byte>(screen);
-            if (auxiliaryLine == null) DrawAuxiliaryLine(screen.Width, screen.Height);
-            Image<Gray, byte> image = inputImage.Convert<Gray, byte>().Erode(2).Dilate(2).ThresholdBinary(new Gray(128), new Gray(255)).Dilate(2).Erode(2);
+            if (auxiliaryPointX == null) DrawAuxiliaryLine(screen.Width, screen.Height);
+            Image<Gray, byte> image = inputImage.Convert<Gray, byte>().ThresholdBinary(new Gray(128), new Gray(255)).Erode(1).Dilate(2);
+
             AnalysisOutput(image);
 
-            //result = image.ToBitmap();
+            result = image.ToBitmap();
             //result.Save("D:/result/" + number++ + ".png");
             //inputImage.Save("C:/result/" + number++ + ".png");
             //image.Save("C:/result/" + number++ + ".png");
@@ -46,52 +47,41 @@ namespace IPFinal
 
         private void DrawAuxiliaryLine(int width, int height)
         {
-            auxiliaryLine = new LineSegment2D[4];
             auxiliaryPointX = new int[4];
-            for (int i = 0; i < 4; i++)
-            {
-                auxiliaryLine[i].P1 = new Point(width / 8 * (i * 2 + 1), 0);
-                auxiliaryLine[i].P2 = new Point(width / 8 * (i * 2 + 1), height);
-                auxiliaryPointX[i] = width / 8 * (i * 2 + 1);
-            }
+            for (int i = 0; i < 4; i++) auxiliaryPointX[i] = width / 8 * (i * 2 + 1);
         }
 
         private void AnalysisOutput(Image<Gray, byte> image)
         {
             for (int i = 0; i < 4; i++)
             {
-                //從底部往上 10 ~ 115 尋找白色部分
-                int objectHeight = 10;
-                for (; objectHeight < 115; objectHeight++) if (image[image.Height - objectHeight, auxiliaryPointX[i]].Intensity > 64) break;
-                if (objectHeight >= 115)
+                //從底部往上 25 ~ 75 尋找白色部分
+                //                ↑希望之後可以變成可動參數
+                int objectHeight = 25;
+                for (; objectHeight < 75; objectHeight++) if (image[image.Height - objectHeight, auxiliaryPointX[i]].Intensity > 64) break;
+                if (objectHeight >= 75)
                 {
                     if (outputSender.GetKeyDown(i)) outputSender.SendKeyUp(i);
                     continue;
                 }
 
-                //如果不是從10 ~ 115開始出現白色，先按下按鍵
-                if (objectHeight > 10)
+                //如果不是從25 ~ 75開始出現白色，先按下按鍵
+                if (objectHeight > 25)
                 {
 
                     int secondObjectHeight = 0;
-                    int secondLimit = 90 - objectHeight;
+                    int secondLimit = 30;
                     for (; secondObjectHeight <= secondLimit; secondObjectHeight++) if (image[image.Height - objectHeight - secondObjectHeight, auxiliaryPointX[i]].Intensity < 64) break;
 
-                    //click按鍵的需要的高度比較低
-                    if (secondObjectHeight <= 25 && objectHeight <= 75)
-                    {
-                        outputSender.SendKey(i);
-                        //if (isKeyDown) 
-                        //else outputSender.SendKeyUp(i);
-                    }
-                    //長壓得提早按，原因我也不知道
-                    else if (secondObjectHeight > 25) outputSender.SendKeyDown(i);
+                    if (secondObjectHeight <= 25 && secondObjectHeight >= 20) outputSender.SendKey(i);
+                    else outputSender.SendKeyDown(i);
                 }
-                else
+                //如果從底下開始就是白色的，判定為常壓
+                else if(outputSender.GetKeyDown(i))
                 {
                     int whiteHeight = 0;
-                    for (; whiteHeight < 65; whiteHeight++) if (image[image.Height - objectHeight - whiteHeight, auxiliaryPointX[i]].Intensity < 64) break;
-                    if (whiteHeight < 65) outputSender.SendKeyUp(i);
+                    for (; whiteHeight < 75; whiteHeight++) if (image[image.Height - objectHeight - whiteHeight, auxiliaryPointX[i]].Intensity < 64) break;
+                    if (whiteHeight < 75) outputSender.SendKeyUp(i);
                 }
             }
             outputSender.Send();

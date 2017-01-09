@@ -20,7 +20,7 @@ namespace IPFinal
             sc = new ScreenCapture(sp);
             InitializeComponent();
             timer.Tick += new EventHandler(timer_Tick);
-            timer.Interval = TimeSpan.FromTicks(15);
+            timer.Interval = TimeSpan.FromTicks(17);
         }
 
         private void Start_Click(object sender, RoutedEventArgs e)

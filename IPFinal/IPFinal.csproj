@@ -96,6 +96,10 @@
     <Reference Include="Emgu.CV">
       <HintPath>Emgu\Emgu.CV.dll</HintPath>
     </Reference>
+    <Reference Include="Emgu.CV.GPU, Version=2.4.10.1939, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Emgu\Emgu.CV.GPU.dll</HintPath>
+    </Reference>
     <Reference Include="Emgu.Util">
       <HintPath>Emgu\Emgu.Util.dll</HintPath>
     </Reference>

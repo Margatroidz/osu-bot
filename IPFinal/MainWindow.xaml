@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="900" Width="1200">
     <Grid>
-        <Image x:Name="previewImage" Height="750" Margin="60,60,782,59" Width="750"/>
+        <Image x:Name="previewImage" Height="750" Margin="60,60,782,59" Width="750" Stretch="Fill" StretchDirection="DownOnly"/>
         <Button x:Name="startButton" Content="BotStart" HorizontalAlignment="Left" Margin="910,100,0,0" VerticalAlignment="Top" Width="75" Click="Start_Click"/>
         <Button x:Name="stopButton" Content="BotStop" HorizontalAlignment="Left" Margin="910,200,0,0" VerticalAlignment="Top" Width="75" Click="Stop_Click"/>
         <RadioButton x:Name="sourceRadioButton" Content="Soruce" HorizontalAlignment="Left" Margin="910,400,0,0" VerticalAlignment="Top" GroupName="preview" CommandParameter="0" Checked="PreviewRadioButton_Checked"/>

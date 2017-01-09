@@ -43,7 +43,7 @@ namespace IPFinal
                     if (recoverKeyBuffer.Count > 0)
                     {
                         int[] keys = recoverKeyBuffer.Dequeue();
-                        await Task.Delay(20);
+                        await Task.Delay(17);
                         foreach (int key in keys) keybd_event(keyCode[key], 0, KEYEVENTF_KEYUP, (IntPtr)0);
                     }
                 }
